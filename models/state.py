@@ -17,4 +17,15 @@ class State(BaseModel, Base):
         cities = relationship("City", backref="state")
     else:
         name = ""
-    cites = []
+
+        @property
+        def cities(self):
+            """returns the list of City objects linked to the State"""
+            from models import storage
+            cities_list = []
+            
+            all_cities = models.storage.all(City)
+            for city in all_cities.values():
+                if city.state_id == self.id:
+                    cities_list.append(city)
+            return cities_list
